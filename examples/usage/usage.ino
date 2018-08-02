@@ -1,8 +1,7 @@
 // Copyright (c) 2018 Jidesh Veeramachaneni
 // Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
 
-#include "Particle.h"
-#include "LoopWaiter.h"
+#include <LoopWaiter.h>
 
 LoopWaiter<unsigned long> red_waiter(millis);
 LoopWaiter<unsigned long> green_waiter(millis);
