@@ -6,7 +6,7 @@ The library has been tested using [Google Test](https://github.com/google/google
 
 ## Usage
 
-See the [example](examples/usage/usage.ino) for a complete example of how LoopWaiter can be used on a Particle device.
+See the [example](examples/usage/usage.ino) for a complete example.
 
 You may clone this repository and run the tests by doing the following:
 

@@ -4,10 +4,11 @@
 #pragma once
 
 /**
- * The LoopWaiter class can be used on any microcontroller to 
- * simplify waiting without blocking the main loop() function
- * with a delay(). It works even if the millis() counter has
- * overflowed.
+ * The LoopWaiter class was designed to be used on any 
+ * microcontroller to simplify waiting without blocking 
+ * the main loop() with a delay(). It works even if the 
+ * millis() counter has overflowed as long as you use 
+ * unsigned types.
  *
  * @tparam T the type used by the millis() function
  */
@@ -65,13 +66,14 @@ public:
       return false;
     }
     
-    T diff = TimeDiff(m_millis());
-    bool expired = (m_wait_time <= diff);
+    bool expired = (m_wait_time <= TimeDiff(m_millis()));
     
-    if (expired && m_repeat) {
-      Repeat();
-    } else if (expired) {
-      Stop();
+    if (expired) {
+      if (m_repeat) {
+        Repeat();
+      } else {
+        Stop();
+      }
     }
     
     return expired;
@@ -92,11 +94,6 @@ private:
   }
 
   T TimeDiff (T now) {
-    if (now < m_start) {
-      // timer has overflowed
-      return (std::numeric_limits<T>::max() - m_start + now);
-    } else {
-      return (now - m_start);
-    }
+    return (now - m_start);
   }
 };

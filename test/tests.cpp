@@ -78,20 +78,23 @@ TEST_F (UnitTests, 10_seconds_repeat_stopped) {
 }
 
 TEST_F (UnitTests, 10_seconds_repeat_overflow) {
-  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - 1;
+  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - (unsigned long)1;
   m_lw->Start(10000);
-  mock_millis_fake.return_val = 9999;
-  EXPECT_LT(9999, std::numeric_limits<unsigned long>::max());
+  // we use 9998 since the rollover to zero is a step
+  // thus the time difference will be exactly 10000
+  mock_millis_fake.return_val = 9998;
   EXPECT_EQ(true, m_lw->Expired());
   mock_millis_fake.return_val = 19999;
   EXPECT_EQ(true, m_lw->Expired());
   ASSERT_EQ(mock_millis_fake.call_count, 5);
 }
 
-TEST_F (UnitTests, 10_seconds_not_expired) {
-  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - 1;
+TEST_F (UnitTests, 10_seconds_not_expired_overflow) {
+  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - (unsigned long)1;
   m_lw->Start(10000);
-  mock_millis_fake.return_val = 9998;
+  // we use 9997 since the rollover to zero is a step
+  // thus the time difference will be exactly 9999
+  mock_millis_fake.return_val = 9997;
   EXPECT_EQ(false, m_lw->Expired());
   mock_millis_fake.return_val = 10000;
   EXPECT_EQ(true, m_lw->Expired());
@@ -100,7 +103,7 @@ TEST_F (UnitTests, 10_seconds_not_expired) {
 
 TEST_F (UnitTests, 10_seconds_no_repeat) {
   LoopWaiter<unsigned long> lw(mock_millis,false);
-  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - 1;
+  mock_millis_fake.return_val = std::numeric_limits<unsigned long>::max() - (unsigned long)1;
   lw.Start(10000);
   mock_millis_fake.return_val = 9999;
   EXPECT_EQ(true, lw.Expired());
